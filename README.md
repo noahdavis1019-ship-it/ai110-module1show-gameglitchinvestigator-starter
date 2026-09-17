@@ -61,21 +61,29 @@ Normal difficulty (1–100, 8 attempts). I opened Developer Debug Info and the s
 
 ```
 $ python -m pytest -v
-tests/test_game_logic.py::test_winning_guess PASSED
-tests/test_game_logic.py::test_guess_too_high PASSED
-tests/test_game_logic.py::test_guess_too_low PASSED
-tests/test_game_logic.py::test_too_high_hint_says_go_lower PASSED
-tests/test_game_logic.py::test_too_low_hint_says_go_higher PASSED
-tests/test_game_logic.py::test_string_secret_is_compared_as_a_number PASSED
-tests/test_game_logic.py::test_wrong_guess_never_adds_points PASSED
-tests/test_game_logic.py::test_first_try_win_is_100_points PASSED
-tests/test_game_logic.py::test_hard_range_is_bigger_than_normal PASSED
-tests/test_game_logic.py::test_decimal_guess_is_rejected PASSED
-tests/test_game_logic.py::test_empty_or_spaces_guess_is_rejected PASSED
-tests/test_game_logic.py::test_negative_guess_is_too_low PASSED
-tests/test_game_logic.py::test_very_large_guess_is_too_high PASSED
-tests/test_game_logic.py::test_late_win_still_gets_10_points PASSED
-============================== 14 passed in 0.02s ==============================
+============================= test session starts ==============================
+platform darwin -- Python 3.13.5, pytest-9.1.1, pluggy-1.6.0 -- /Users/noahdavis/Downloads/gameglitch/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/noahdavis/Downloads/gameglitch
+plugins: anyio-4.15.1
+collecting ... collected 14 items
+
+tests/test_game_logic.py::test_winning_guess PASSED                      [  7%]
+tests/test_game_logic.py::test_guess_too_high PASSED                     [ 14%]
+tests/test_game_logic.py::test_guess_too_low PASSED                      [ 21%]
+tests/test_game_logic.py::test_too_high_hint_says_go_lower PASSED        [ 28%]
+tests/test_game_logic.py::test_too_low_hint_says_go_higher PASSED        [ 35%]
+tests/test_game_logic.py::test_string_secret_is_compared_as_a_number PASSED [ 42%]
+tests/test_game_logic.py::test_wrong_guess_never_adds_points PASSED      [ 50%]
+tests/test_game_logic.py::test_first_try_win_is_100_points PASSED        [ 57%]
+tests/test_game_logic.py::test_hard_range_is_bigger_than_normal PASSED   [ 64%]
+tests/test_game_logic.py::test_decimal_guess_is_rejected PASSED          [ 71%]
+tests/test_game_logic.py::test_empty_or_spaces_guess_is_rejected PASSED  [ 78%]
+tests/test_game_logic.py::test_negative_guess_is_too_low PASSED          [ 85%]
+tests/test_game_logic.py::test_very_large_guess_is_too_high PASSED       [ 92%]
+tests/test_game_logic.py::test_late_win_still_gets_10_points PASSED      [100%]
+
+============================== 14 passed in 0.01s ==============================
 ```
 
 ## 🚀 Stretch Features
