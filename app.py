@@ -137,5 +137,3 @@ if submit:
                     f"Score: {st.session_state.score}"
                 )
 
-st.divider()
-st.caption("Originally AI-generated, now debugged and tested.")
