@@ -34,6 +34,7 @@ def check_guess(guess, secret):
         return "Win", "🎉 Correct!"
 
     try:
+        # FIXME: hint messages are backwards
         if guess > secret:
             return "Too High", "📈 Go HIGHER!"
         else:
@@ -55,6 +56,7 @@ def update_score(current_score: int, outcome: str, attempt_number: int):
         return current_score + points
 
     if outcome == "Too High":
+        # FIXME: wrong guesses should never add points
         if attempt_number % 2 == 0:
             return current_score + 5
         return current_score - 5
@@ -93,7 +95,7 @@ if "secret" not in st.session_state:
     st.session_state.secret = random.randint(low, high)
 
 if "attempts" not in st.session_state:
-    st.session_state.attempts = 1
+    st.session_state.attempts = 1  # FIXME: should start at 0
 
 if "score" not in st.session_state:
     st.session_state.score = 0
@@ -132,6 +134,7 @@ with col3:
     show_hint = st.checkbox("Show hint", value=True)
 
 if new_game:
+    # FIXME: status, score and history are never reset
     st.session_state.attempts = 0
     st.session_state.secret = random.randint(1, 100)
     st.success("New game started.")
@@ -155,6 +158,7 @@ if submit:
     else:
         st.session_state.history.append(guess_int)
 
+        # FIXME: Logic breaks here - secret turns into a string
         if st.session_state.attempts % 2 == 0:
             secret = str(st.session_state.secret)
         else:
