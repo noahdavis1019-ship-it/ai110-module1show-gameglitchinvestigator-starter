@@ -12,7 +12,7 @@ from logic_utils import (
 st.set_page_config(page_title="Glitchy Guesser", page_icon="🎮")
 
 st.title("🎮 Game Glitch Investigator")
-st.caption("An AI-generated guessing game. Something is off.")
+st.caption("A number guessing game — debugged and fixed.")
 
 st.sidebar.header("Settings")
 
@@ -138,4 +138,4 @@ if submit:
                 )
 
 st.divider()
-st.caption("Built by an AI that claims this code is production-ready.")
+st.caption("Originally AI-generated, now debugged and tested.")
