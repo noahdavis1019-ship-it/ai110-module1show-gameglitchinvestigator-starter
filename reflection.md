@@ -46,18 +46,42 @@ Exceptions: none
 
 ## 2. How did you use AI as a teammate?
 
-- Which AI tools did you use on this project (for example: ChatGPT, Gemini, Copilot)?
-- Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
-- Give one example of an AI suggestion you did not accept as written (including what the AI suggested, why you rejected or changed it, and how you verified your version). It does not have to be a suggestion that was wrong: over-engineered, out of scope, harder to read, or a poor fit for this codebase all count.
+I used **Claude** as my AI coding assistant. I gave it `app.py`, `logic_utils.py` and the tests, and asked about one bug at a time.
+
+**AI explanation of a bug:** I asked Claude to explain step by step why the hints felt random on some turns. It pointed to `secret = str(st.session_state.secret)` on even attempts. Comparing an int to a string raises a `TypeError`, and the `except` block then compares both as strings. Strings compare character by character, so `"9" > "50"` is `True`.
+
+**Correct suggestion (accepted):** Claude suggested deleting the string conversion completely instead of adding more `try/except`, and swapping the two hint messages in `check_guess`. I checked it by calling `check_guess(60, 50)`, which now gives `("Too High", "📉 Go LOWER!")`, and `check_guess(9, "50")`, which now gives `"Too Low"`. I also added a pytest case for each.
+
+**Suggestion I did not accept as written:** Claude's first rewrite was over-engineered for this project. It added a settings dictionary for difficulty, a `new_game_state()` helper that took a random number generator as an argument, and an extra Streamlit testing script. It worked, but it was harder to read than the bugs were to fix, and more than a small guessing game needs. I asked for a simpler version that keeps the starter's structure: plain `if` statements in `get_range_for_difficulty` and a New Game block that resets each value directly. I checked the simpler version with pytest (9 passed) and by replaying the same game as in Section 1.
+
+**Misleading explanation:** Claude also said that because of the string bug, a correct guess could *never* win on an even attempt. When I tested `check_guess(50, "50")` on the starter code, it returned `"Win"`, because the `except` block has its own `if g == secret` check. The real damage was the wrong high/low outcomes and the score going up on wrong guesses, so that's what I wrote down in my bug log.
 
 ---
 
 ## 3. Debugging and testing your fixes
 
-- How did you decide whether a bug was really fixed?
-- Describe at least one test you ran (manual or using pytest)  
-  and what it showed you about your code.
-- Did AI help you design or understand any tests? How?
+I counted a bug as fixed only when (1) a pytest case for it passed and (2) the same inputs from my bug log behaved correctly in the game.
+
+- **pytest:** the 3 starter tests were failing because the functions in `logic_utils.py` weren't written yet, and because they compared the returned tuple to a string. After moving the logic over and changing those tests to unpack `outcome, message`, I added 6 more tests. `python -m pytest` shows **9 passed**.
+- **One test that taught me something:** `test_string_secret_is_compared_as_a_number` checks `check_guess(9, "50")`. It showed that converting both values with `int()` in one place fixes the problem even if a string sneaks in from somewhere else.
+- **Replaying the game:** same secret (50) and the same guesses as before the fixes:
+
+```text
+Start: secret=50 attempts=0 info='Guess a number between 1 and 100. Attempts left: 8'
+Guess   '60' -> ['Go LOWER!'] | attempts=1 score=-5 status=playing
+Guess   '40' -> ['Go HIGHER!'] | attempts=2 score=-10 status=playing
+Guess    '9' -> ['Go HIGHER!'] | attempts=3 score=-15 status=playing
+Guess  'abc' -> ['That is not a whole number.'] | attempts=3 score=-15 status=playing
+Guess   '50' -> ['Correct!', 'You won! The secret was 50. Final score: 55'] | attempts=4 score=55 status=won
+Guess    '7' -> ['You already won. Start a new game to play again.'] | attempts=4 score=55 status=won
+New Game -> attempts=0 score=0 status=playing history=[]
+Exceptions: none
+Switch to Hard -> info='Guess a number between 1 and 200. Attempts left: 5'
+```
+
+Hints point the right way. `abc` doesn't use up an attempt. The score goes down on every wrong guess, and a win on attempt 4 earns 70 (-15 + 70 = 55). New Game resets everything, and Hard now uses 1–200.
+
+- **AI and tests:** Claude suggested testing the exact inputs from my bug log (60 vs 50, and 9 vs "50"), so each test lines up with one row of the table.
 
 ---
 
