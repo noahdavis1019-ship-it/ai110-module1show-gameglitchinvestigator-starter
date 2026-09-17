@@ -1,4 +1,9 @@
-from logic_utils import check_guess, update_score, get_range_for_difficulty
+from logic_utils import (
+    check_guess,
+    update_score,
+    get_range_for_difficulty,
+    parse_guess,
+)
 
 # FIX: check_guess returns (outcome, message), so the starter tests were
 # comparing a tuple to a string. They now look at the outcome only.
@@ -54,3 +59,29 @@ def test_first_try_win_is_100_points():
 def test_hard_range_is_bigger_than_normal():
     # Bug 6: Hard used to be 1-50
     assert get_range_for_difficulty("Hard") == (1, 200)
+
+
+# --- Edge cases (Challenge 1) ---
+
+def test_decimal_guess_is_rejected():
+    ok, value, err = parse_guess("4.9")
+    assert ok is False
+
+
+def test_empty_or_spaces_guess_is_rejected():
+    assert parse_guess("")[0] is False
+    assert parse_guess("   ")[0] is False
+
+
+def test_negative_guess_is_too_low():
+    outcome, message = check_guess(-5, 50)
+    assert outcome == "Too Low"
+
+
+def test_very_large_guess_is_too_high():
+    outcome, message = check_guess(99999999999, 50)
+    assert outcome == "Too High"
+
+
+def test_late_win_still_gets_10_points():
+    assert update_score(0, "Win", 20) == 10

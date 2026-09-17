@@ -87,13 +87,12 @@ Hints point the right way. `abc` doesn't use up an attempt. The score goes down 
 
 ## 4. What did you learn about Streamlit and state?
 
-- How would you explain Streamlit "reruns" and session state to a friend who has never used Streamlit?
+Streamlit runs your whole script again from top to bottom every time you click a button or type in a box. That's called a rerun. Normal variables get reset on every rerun, so if you wrote `secret = random.randint(1, 100)` it would pick a new number on every click. `st.session_state` is like a dictionary that survives reruns, so the secret, score and attempts need to live there. The starter did save them in session state, but New Game only reset some of them, which is why the game got stuck on "You already won."
 
 ---
 
 ## 5. Looking ahead: your developer habits
 
-- What is one habit or strategy from this project that you want to reuse in future labs or projects?
-  - This could be a testing habit, a prompting strategy, or a way you used Git.
-- What is one thing you would do differently next time you work with AI on a coding task?
-- In one or two sentences, describe how this project changed the way you think about AI generated code.
+- **Habit to keep:** reproduce the bug with the same inputs before and after fixing it (I pinned the secret to 50 and used the same guesses each time), and turn each row of my bug log into a pytest case.
+- **What I'd do differently:** tell the AI my skill level and "keep the existing structure" in the first prompt. Its first fix was more complicated than it needed to be, and I had to ask it to simplify.
+- **How this changed my thinking:** code that runs without crashing can still be very wrong. I now test AI code with specific inputs instead of trusting that it looks right.
