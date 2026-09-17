@@ -57,6 +57,18 @@ Normal difficulty (1–100, 8 attempts). I opened Developer Debug Info and the s
 7. I click **New Game**. Attempts, score and history reset, and I can play again.
 8. I switch to **Hard**. The banner says "Guess a number between 1 and 200. Attempts left: 5".
 
+## 🧱 Challenges and Mistakes
+
+Not every fix worked the first time. The main mistakes (details in `reflection.md`, section 6):
+
+- Swapped the outcome labels instead of the hint messages, which broke scoring.
+- Tried to fix the string bug with more `str()` calls, which made every comparison alphabetical.
+- Left duplicate buggy functions in `app.py` after moving them to `logic_utils.py`, so the game ignored my fixes.
+- Reset the score with a normal variable, forgetting that Streamlit reruns the whole script on every click.
+- Introduced an off-by-one error in the win formula, caught by `test_first_try_win_is_100_points`.
+- Wrote a test that always passed (`assert check_guess(60, 50)`) because a non-empty tuple is truthy.
+- Kept the old secret when switching difficulty, so it could be outside the new range.
+
 ## 🧪 Test Results
 
 ```

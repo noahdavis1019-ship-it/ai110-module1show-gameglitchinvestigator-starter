@@ -96,3 +96,19 @@ Streamlit runs your whole script again from top to bottom every time you click a
 - **Habit to keep:** reproduce the bug with the same inputs before and after fixing it (I pinned the secret to 50 and used the same guesses each time), and turn each row of my bug log into a pytest case.
 - **What I'd do differently:** tell the AI my skill level and "keep the existing structure" in the first prompt. Its first fix was more complicated than it needed to be, and I had to ask it to simplify.
 - **How this changed my thinking:** code that runs without crashing can still be very wrong. I now test AI code with specific inputs instead of trusting that it looks right.
+
+---
+
+## 6. Mistakes I made while fixing the code
+
+- **Fixed the hint in the wrong place.** My first attempt swapped the `"Too High"` and `"Too Low"` labels instead of the messages. The hints looked right on screen, but `update_score` got the wrong outcome, and `test_guess_too_high` failed. The labels were correct all along; only the "Go HIGHER" / "Go LOWER" text was backwards.
+- **Patched the string bug with another `str()`.** To stop the `TypeError`, I first wrapped the guess in `str()` too, so both sides matched. The crash went away, but now *every* attempt compared alphabetically, and 9 counted as higher than 50. Converting both sides with `int()` was the real fix.
+- **Left the old functions in `app.py` after the refactor.** I copied the functions into `logic_utils.py` but forgot to delete them from `app.py`. The game kept using the old buggy copies, so my fixes "didn't work" in the browser even though pytest passed. Deleting the duplicates and adding the import fixed it.
+- **Put Streamlit code in `logic_utils.py`.** I added `import streamlit as st` to show an error message from `parse_guess`. Running pytest then printed Streamlit warnings, and the logic was no longer testable on its own. I moved all `st.` calls back into `app.py`.
+- **Forgot that Streamlit reruns the whole script.** I reset the score by writing `score = 0` at the top of `app.py`. It reset on *every* button click, so the score never went below -5. It has to live in `st.session_state` and only be set once with `if "score" not in st.session_state`.
+- **New Game only half-fixed.** I added `st.session_state.status = "playing"` but forgot `history` and `score`, so old guesses still showed in Debug Info. I caught it by clicking New Game after a win and checking every value in the panel.
+- **Off-by-one in the win formula.** When I changed `attempts` to start at 0, I also changed the formula to `100 - 10 * attempt_number`. A first-try win then gave 90 instead of 100. Because attempts go up *before* scoring, the first guess is attempt 1, so the formula needed `attempt_number - 1`. `test_first_try_win_is_100_points` caught this.
+- **`parse_guess(None)` crashed.** My new version called `raw.strip()` before checking for `None`, which raised `AttributeError: 'NoneType' object has no attribute 'strip'`. I moved the `raw is None` check first.
+- **A test passed for the wrong reason.** One early test did `assert check_guess(60, 50)`, which is always `True` because a non-empty tuple is truthy. It passed even with the bug still there. I changed it to unpack `outcome, message` and compare `outcome == "Too High"`.
+- **Changed difficulty and the secret was out of range.** After making Hard 1–200, I switched from Hard to Easy and the secret was still 143, so I couldn't win on a 1–20 range. I added a check that picks a new secret when the difficulty changes.
+

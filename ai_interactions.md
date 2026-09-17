@@ -10,15 +10,21 @@
 
 **What task did you give the agent?**
 
-<!-- Describe the goal you asked the agent to accomplish -->
+"Move `get_range_for_difficulty`, `parse_guess`, `check_guess` and `update_score` from app.py into logic_utils.py, fix the backwards hints and the string-secret bug, and update the import in app.py."
 
 **What did the agent do?**
 
-<!-- List the steps the agent took (files edited, commands run, etc.) -->
+1. Copied the four functions into `logic_utils.py`, replacing the `NotImplementedError` stubs.
+2. Swapped the hint messages in `check_guess` and added `int()` conversion on both values.
+3. Added `from logic_utils import ...` at the top of `app.py`.
+4. Removed the `str(st.session_state.secret)` block in the submit handler.
 
 **What did you have to verify or fix manually?**
 
-<!-- Describe anything the agent got wrong or that required human review -->
+- The agent added the import but **left the old function definitions in `app.py`**. Python used the later local copies, so the game still had the bugs. I deleted the duplicates by hand.
+- Its first `parse_guess` rewrite called `raw.strip()` before the `None` check, which crashed on `parse_guess(None)`. I reordered the checks.
+- It didn't update the starter tests, which still compared the returned tuple to a string. I changed them to unpack `outcome, message`.
+- I reviewed the diff for both files, then confirmed with `python -m pytest -v` (14 passed) and by playing a full game in the browser.
 
 ---
 
